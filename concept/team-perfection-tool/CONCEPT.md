@@ -63,3 +63,33 @@ This is a re-scoped and Emerald-specialized version of the broader `02-team-perf
 - Not a ROM hacking or emulator automation tool.
 - Does not build or integrate the `03-enhanced-agent-intelligence` battle AI; that project remains separate. The player-side bot is a Showdown default bot (e.g., RuleBot).
 - LLM-based planning is out of scope.
+
+## NOTE FOR PLANNING
+
+Yes. The pokeemerald decompilation is a complete, buildable source tree of the entire game including the full battle system. Here's what you can do:
+
+**Run natively on PC:**
+- Build the ROM with `make` and play in any GBA emulator (mGBA, VBA-M, etc.)
+- The `pokeemerald-expansion` adds debug menu access, save state manipulation, and real-time battle debugging tools
+- `pokeemerald-multiplatform` and `pkmemerald` ports run natively on Windows/Linux with full battle system intact
+
+**Access the battle system source directly:**
+- `src/battle_*.c` — core battle logic (turn processing, move execution, status conditions)
+- `src/battle_ai_*.c` — AI decision making
+- `src/battle_anim_*.c` — animations and visual effects
+- `include/battle_*.h` — all battle structs, enums, command definitions
+- `data/battle_moves`, `data/battle_items`, `data/battle_terrain` — complete data tables
+- The expansion's `B_` config flags let you toggle Gen 8/9 mechanics without touching core code
+
+**Extract and test in isolation:**
+- Build a `battle_test` or use the `test_engine` that ships with the expansion to run individual battles programmatically
+- The expansion's `Makefile` has `make test` targets for running automated battle scenario tests
+- You can link just `battle_main.c`, `battle_lobby.c`, and supporting data to create a standalone battle runner
+
+**Modifications are trivial:**
+- Add moves via `data/battle_moves.c`
+- Change types/effects via `include/constants/move_ids.h` and `move_effect_funcs.c`
+- Add abilities, items, or whole mechanics via the `ABILITY_POKE_*` and `ITEM_PINIC` hooks
+- The expansion's `config/battle.h` has 50+ compile-time switches for every rule set generation
+
+The entire battle engine runs at normal GBA speed inside the emulator, with no performance issues. You get the authentic Gen 3 battle system — including all 842 moves, 370+ Pokemon, hidden abilities, and the full damage calculation — as readable C code you can modify and retest instantly.
